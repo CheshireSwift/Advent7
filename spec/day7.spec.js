@@ -68,6 +68,16 @@ describe('the day 7 machine', function() {
       .then(done, done)
   })
 
+  it('can perform operations on raw values', function(done) {
+    d7.signal('a', d7.and(1, 'x'))
+    d7.signal('x', 123)
+    d7.read('a')
+      .then(function(a) {
+        expect(a).toBe(1 & 123)
+      })
+      .then(done, done)
+  })
+
   it('behaves in accordance with the example provided on http://adventofcode.com/day/7', function(done) {
     d7.signal('x', 123)
     d7.signal('y', 456)
@@ -88,6 +98,21 @@ describe('the day 7 machine', function() {
       d7.read('x').then(function(value) { expect(value).toBe(123) }),
       d7.read('y').then(function(value) { expect(value).toBe(456) })
     ])
+      .then(done, done)
+  })
+
+  it('can dump the full state', function(done) {
+    d7.signal('z', d7.and('x', 'y'))
+    d7.signal('x', 123)
+    d7.signal('y', 456)
+    d7.readAll()
+      .then(function(out) {
+        expect(out).toEqual({
+          x: 123,
+          y: 456,
+          z: 123 & 456
+        })
+      })
       .then(done, done)
   })
 })

@@ -12,15 +12,28 @@ function Day7() {
     getWire(label).resolve(value)
   }
 
-  this.read = function(label) {
+  this.read = read = function(label) {
     return getWire(label).promise;
   }
 
+  function readLabelled(label) {
+    return read(label).then(function(value) {
+      return { [label]: value }
+    })
+  }
+
+  this.readAll = function() {
+    return Promise.all(Object.keys(wires).map(readLabelled))
+      .then(function(labelledOutputs) {
+        return Object.assign.apply(null, [{}].concat(labelledOutputs))
+      })
+  }
+
   function op(handler) {
-    return function(label1, label2) {
+    return function(a, b) {
       return Promise.all([
-        this.read(label1),
-        this.read(label2)
+        typeof a === 'number' ? a : read(a),
+        typeof b === 'number' ? b : read(b)
       ]).then(function(values) {
         return handler(values[0], values[1])
       })
@@ -35,28 +48,18 @@ function Day7() {
     return value1 | value2
   })
 
-  function partialOp(handler) {
-    return function(label, fixed) {
-      return this.read(label)
-        .then(function(value) {
-          return handler(value, fixed)
-        })
-    }
-  }
-
-  this.lshift = partialOp(function(value, distance) {
+  this.lshift = op(function(value, distance) {
     return value << distance
   })
 
-  this.rshift = partialOp(function(value, distance) {
+  this.rshift = op(function(value, distance) {
     return value >> distance
   })
 
   this.not = function(label) {
-    return this.read(label)
-      .then(function(value) {
-        return 65536 + ~value
-      })
+    return read(label).then(function(value) {
+      return 65536 + ~value
+    })
   }
 }
 
