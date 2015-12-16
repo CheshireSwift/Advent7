@@ -6,28 +6,29 @@ describe('the parser', function() {
   })
 
   it('detects raw signals', function() {
-    expect(parse('1234 -> a').signal).toBe(1234)
+    expect(parse('1234 -> a')).toEqual(jasmine.objectContaining({a: 1234, op: 'SIGNAL'}))
   })
 
-  var opExamples = [
-    {
-      op: 'AND',
-      line: '123 AND 456 -> a',
-      output: {a: 123, b: 456, op: 'AND'}
-    },
-    {
-      op: 'OR',
-      line: '123 OR 456 -> a',
-      output: {a: 123, b: 456, op: 'OR'}
-    }
-    // LSHIFT
-    // RSHIFT
-    // NOT
-    // raw/wire combos?
-  ]
+  var as = [123, 'x']
+  var bs = [456, 'y']
+  var ops = ['AND', 'OR', 'LSHIFT', 'RSHIFT']
+  var opExamples = ops.map(function(op) {
+    return as.map(function(a) {
+      return bs.map(function(b) {
+        return {
+          line: `${a} ${op} ${b} -> a`,
+          output: {a, b, op}
+        }
+      })
+    }).reduce(function(a, b) { return a.concat(b) })
+  }).reduce(function(a, b) { return a.concat(b) })
+    .concat(
+      { line: 'NOT x -> a',   output: {a: 'x', op: 'NOT'} },
+      { line: 'NOT 123 -> a', output: {a: 123, op: 'NOT'} }
+    )
 
   opExamples.forEach(function(params) {
-    it('parses ' + params.op + ' signals', function() {
+    it('parses ' + params.line, function() {
       expect(parse(params.line)).toEqual(jasmine.objectContaining(params.output))
     })
   })

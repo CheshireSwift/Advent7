@@ -1,23 +1,27 @@
 function parse(line) {
   var results = /^(.+) -> (\w+)$/.exec(line)
   if (!results) {
-    throw new ParseError('Line does not contain a valid output target.', line)
+    throw new ParseError('Line does not contain a valid output target', line)
   }
 
-  var command = results[1]
   var retval = {
     target: results[2]
   }
 
+  var command = results[1]
   var commandResults
   if (commandResults = /^\d+$/.exec(command)) {
-    retval.signal = +commandResults[0]
-  } else if (commandResults = /^(\d+) (AND|OR) (\d+)$/.exec(command)) {
-    retval.a = +commandResults[1]
+    retval.op = 'SIGNAL'
+    retval.a = +commandResults[0]
+  } else if (commandResults = /^NOT (\S+)$/.exec(command)) {
+    retval.op = 'NOT'
+    retval.a = +commandResults[1] || commandResults[1]
+  } else if (commandResults = /^(\S+) (AND|OR|LSHIFT|RSHIFT) (\S+)$/.exec(command)) {
+    retval.a = +commandResults[1] || commandResults[1]
     retval.op = commandResults[2]
-    retval.b = +commandResults[3]
+    retval.b = +commandResults[3] || commandResults[3]
   } else {
-    throw new ParseError('Line contained invalid input signal.', line)
+    throw new ParseError('Line contained invalid input signal', line)
   }
 
   return retval
