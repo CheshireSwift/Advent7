@@ -4,11 +4,13 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/jasmine"
+    "test": "node_modules/.bin/jasmine",
+    "test:watch": "node_modules/.bin/watch \"npm test\" ."
   },
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "jasmine": "^2.4.1"
+    "jasmine": "^2.4.1",
+    "watch": "^0.16.0"
   }
 }
