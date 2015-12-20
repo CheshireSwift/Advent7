@@ -12,5 +12,8 @@
   "devDependencies": {
     "jasmine": "^2.4.1",
     "watch": "^0.16.0"
+  },
+  "dependencies": {
+    "commander": "^2.9.0"
   }
 }
