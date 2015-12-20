@@ -21,7 +21,7 @@ function parse(line) {
     retval.op = commandResults[2]
     retval.b = +commandResults[3] || commandResults[3]
   } else {
-    throw new ParseError('Line contained invalid input signal', line)
+    throw new ParseError(`Line contained invalid input signal "${command}" in "${line}"`, line)
   }
 
   return retval
