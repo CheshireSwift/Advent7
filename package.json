@@ -10,8 +10,8 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "jasmine": "^2.4.1",
-    "watch": "^0.16.0"
+    "jasmine": "^3.2.0",
+    "watch": "^1.0.2"
   },
   "dependencies": {
     "commander": "^2.9.0"
